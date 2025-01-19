@@ -1,0 +1,22 @@
+# Use the official OpenJDK 17 base image
+FROM openjdk:17-jdk-slim
+
+RUN apt-get update && apt-get install -y procps
+
+# Create a user with limited access
+RUN useradd --create-home --shell /bin/bash limiteduser
+
+# Set the working directory
+WORKDIR /home/limiteduser/app
+
+# Change ownership of the working directory to the new user
+RUN chown -R limiteduser:limiteduser /home/limiteduser/app
+
+# Switch to the new user
+USER limiteduser
+
+# Ensure /tmp is writable
+VOLUME /tmp
+
+# Keep the container running
+CMD ["tail", "-f", "/dev/null"]
